@@ -29,8 +29,8 @@ public class FuncionarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Funcionario>> getAll() {
-        List<Funcionario> funcionarios = service.getAllFuncionarios();
+    public ResponseEntity<List<Funcionario>> getAllNotDeleted() {
+        List<Funcionario> funcionarios = service.getAllFuncionariosNotDeleted();
         return new ResponseEntity<>(funcionarios, HttpStatus.OK);
     }
 

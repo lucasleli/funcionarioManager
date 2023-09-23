@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface FuncionarioRepositoryI {
     Funcionario save(Funcionario funcionario);
-    List<Funcionario> findAll();
-    Optional<Funcionario> findById(Long id);
+    List<Funcionario> findAllNotDeleted();
+    Optional<Funcionario> findByIdAndIsDeletedFalse(Long id);
     void delete(Long id);
     boolean exists(Long id);
 }

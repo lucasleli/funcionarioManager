@@ -23,12 +23,12 @@ public class FuncionarioManager {
         return repository.save(funcionario);
     }
 
-    public List<Funcionario> getAllFuncionarios() {
-        return repository.findAll();
+    public List<Funcionario> getAllFuncionariosNotDeleted() {
+        return repository.findAllNotDeleted();
     }
 
     public Optional<Funcionario> getFuncionarioById(Long id) {
-        return repository.findById(id);
+        return repository.findByIdAndIsDeletedFalse(id);
     }
 
     public Funcionario updateFuncionario(Long id, Funcionario funcionario) {

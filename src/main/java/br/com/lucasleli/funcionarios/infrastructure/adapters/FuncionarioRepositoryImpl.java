@@ -20,13 +20,13 @@ public class FuncionarioRepositoryImpl implements FuncionarioRepositoryI {
     }
 
     @Override
-    public List<Funcionario> findAll() {
-        return repository.findAll();
+    public List<Funcionario> findAllNotDeleted() {
+        return repository.findAllByIsDeletedFalse();
     }
 
     @Override
-    public Optional<Funcionario> findById(Long id) {
-        return repository.findById(id);
+    public Optional<Funcionario> findByIdAndIsDeletedFalse(Long id) {
+        return repository.findByIdAndIsDeletedFalse(id);
     }
 
 
