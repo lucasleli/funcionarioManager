@@ -34,7 +34,7 @@ public class FuncionarioRepositoryImpl implements FuncionarioRepositoryI {
      * Deleta um funcionário pelo ID fornecido.
      * <p>
      * Esta implementação usa exclusão lógica para evitar possíveis problemas de inconsistência
-     * com registros no futuro. Em vez de remover o registro do funcionário do banco de dados,
+     * com registros no futuro. Em vez de remover o registro do funcionário,
      * ele simplesmente marca o registro como "excluído" definindo o campo {@code deleted} como {@code true}.
      * </p>
      * <p>
