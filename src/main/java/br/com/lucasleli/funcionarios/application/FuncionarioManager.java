@@ -28,7 +28,11 @@ public class FuncionarioManager {
     }
 
     public Optional<Funcionario> getFuncionarioNotDeletedById(Long id) {
-        return repository.findByIdAndIsDeletedFalse(id);
+        Optional<Funcionario> funcionario = repository.findByIdAndIsDeletedFalse(id);
+        if (funcionario.isEmpty()) {
+            throw new NoSuchElementException("Funcionário não encontrado");
+        }
+        return funcionario;
     }
 
     public Funcionario updateFuncionario(Long id, Funcionario funcionario) {

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/funcionarios")
@@ -44,25 +45,32 @@ public class FuncionarioController {
 
     @Operation(summary = "Retorna todos os funcionários")
     @GetMapping
-    public ResponseEntity<List<Funcionario>> getAllNotDeleted() {
-        List<Funcionario> funcionarios = service.getAllFuncionariosNotDeleted();
+    public ResponseEntity<List<FuncionarioResponseDto>> getAllNotDeleted() {
+        List<FuncionarioResponseDto> funcionarios = service.getAllFuncionariosNotDeleted().stream()
+                .map(funcionario -> modelMapper.map(funcionario, FuncionarioResponseDto.class))
+                .collect(Collectors.toList());
         return new ResponseEntity<>(funcionarios, HttpStatus.OK);
     }
 
     @Operation(summary = "Retorna um funcionário específico")
     @GetMapping("/{id}")
-    public ResponseEntity<Funcionario> getById(@PathVariable Long id) {
+    public ResponseEntity<FuncionarioResponseDto> getById(@PathVariable Long id) {
         Optional<Funcionario> funcionario = service.getFuncionarioNotDeletedById(id);
-        return funcionario.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        if (funcionario.isPresent()) {
+            FuncionarioResponseDto responseDto = modelMapper.map(funcionario.get(), FuncionarioResponseDto.class);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @Operation(summary = "Atualiza um funcionário especifico")
     @PutMapping("/{id}")
-    public ResponseEntity<Funcionario> update(@PathVariable Long id, @RequestBody FuncionarioUpdateRequestDto funcionarioDto) {
+    public ResponseEntity<FuncionarioResponseDto> update(@PathVariable Long id, @RequestBody FuncionarioUpdateRequestDto funcionarioDto) {
         Funcionario funcionarioUpdate = modelMapper.map(funcionarioDto, Funcionario.class);
         Funcionario updatedFuncionario = service.updateFuncionario(id, funcionarioUpdate);
         if (updatedFuncionario != null) {
-            return new ResponseEntity<>(updatedFuncionario, HttpStatus.OK);
+            FuncionarioResponseDto responseDto = modelMapper.map(updatedFuncionario, FuncionarioResponseDto.class);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
