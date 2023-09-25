@@ -5,6 +5,8 @@ import br.com.lucasleli.funcionarios.domain.Funcionario;
 import br.com.lucasleli.funcionarios.web.dto.request.FuncionarioCreateRequestDTO;
 import br.com.lucasleli.funcionarios.web.dto.request.FuncionarioUpdateRequestDto;
 import br.com.lucasleli.funcionarios.web.dto.response.FuncionarioResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/funcionarios")
+@Tag(name = "Funcionarios", description = "API para gestão de Funcionários")
 public class FuncionarioController {
 
 
@@ -30,6 +33,7 @@ public class FuncionarioController {
         this.modelMapper = modelMapper;
     }
 
+    @Operation(summary = "Cria um novo funcionário")
     @PostMapping
     public ResponseEntity<FuncionarioResponseDto> create(@Valid @RequestBody FuncionarioCreateRequestDTO funcionarioDto) {
         Funcionario payload = modelMapper.map(funcionarioDto, Funcionario.class);
@@ -38,18 +42,21 @@ public class FuncionarioController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Retorna todos os funcionários")
     @GetMapping
     public ResponseEntity<List<Funcionario>> getAllNotDeleted() {
         List<Funcionario> funcionarios = service.getAllFuncionariosNotDeleted();
         return new ResponseEntity<>(funcionarios, HttpStatus.OK);
     }
 
+    @Operation(summary = "Retorna um funcionário específico")
     @GetMapping("/{id}")
     public ResponseEntity<Funcionario> getById(@PathVariable Long id) {
-        Optional<Funcionario> funcionario = service.getFuncionarioById(id);
+        Optional<Funcionario> funcionario = service.getFuncionarioNotDeletedById(id);
         return funcionario.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @Operation(summary = "Atualiza um funcionário especifico")
     @PutMapping("/{id}")
     public ResponseEntity<Funcionario> update(@PathVariable Long id, @RequestBody FuncionarioUpdateRequestDto funcionarioDto) {
         Funcionario funcionarioUpdate = modelMapper.map(funcionarioDto, Funcionario.class);
@@ -61,6 +68,7 @@ public class FuncionarioController {
         }
     }
 
+    @Operation(summary = "Exclui um funcionário específico")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteFuncionario(id);

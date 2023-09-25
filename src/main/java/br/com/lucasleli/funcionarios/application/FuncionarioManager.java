@@ -27,7 +27,7 @@ public class FuncionarioManager {
         return repository.findAllNotDeleted();
     }
 
-    public Optional<Funcionario> getFuncionarioById(Long id) {
+    public Optional<Funcionario> getFuncionarioNotDeletedById(Long id) {
         return repository.findByIdAndIsDeletedFalse(id);
     }
 
